@@ -37,9 +37,8 @@ public class BotStarter implements Bot
 	 */
 	public Region getStartingRegion(BotState state, Long timeOut)
 	{
-		
-		
 		float Maxvalue =0;
+		System.err.println(Maxvalue);
 		Region  startingRegion = null;
 		ArrayList<Region> regions= state.getPickableStartingRegions();
 		for(Region r: regions ){
@@ -57,6 +56,8 @@ public class BotStarter implements Bot
 			if(valueOfR>Maxvalue){
 				Maxvalue= valueOfR;
 				startingRegion=r;
+				System.err.println(Maxvalue + " "+ r.getId() );
+				
 			}
 		}
 		
