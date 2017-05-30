@@ -37,12 +37,14 @@ public class BotStarter implements Bot {
 	 * given pickable regions.
 	 */
 	public Region getStartingRegion(BotState state, Long timeOut) {
+		
 		float Maxvalue = 0;
+		
 		Region startingRegion = null;
 		ArrayList<Region> regions = state.getPickableStartingRegions();
 
 		for (Region r : regions) {
-			float bonus = r.getSuperRegion().getArmiesReward();
+			float bonus = r.getSuperRegion().getArmiesReward(); //Il valore di bonua per la super regione di appartenenza
 			float regionsNumber = (r.getSuperRegion().getSubRegions().size());
 			float numWe = 0;
 			for (Region w : state.getWasteLands())
