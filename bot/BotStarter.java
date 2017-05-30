@@ -51,14 +51,14 @@ public class BotStarter implements Bot
 				}
 			
 			float valueOfR = bonus/((regionsNumber*regionsNumber)+numWe);
+		
+			System.err.println( valueOfR + " "+r.getId());
 			
 			if(valueOfR>Maxvalue){
 				Maxvalue= valueOfR;
 				startingRegion=r;
-				
 			}
-		}
-		
+
 		return startingRegion;
 	}
 
