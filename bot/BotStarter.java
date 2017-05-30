@@ -27,60 +27,45 @@ import map.Region;
 import move.AttackTransferMove;
 import move.PlaceArmiesMove;
 
-public class BotStarter implements Bot
-{
+public class BotStarter implements Bot {
 	@Override
 	/**
-	 * A method that returns which region the bot would like to start on, the pickable regions are stored in the BotState.
-	 * The bots are asked in turn (ABBAABBAAB) where they would like to start and return a single region each time they are asked.
-	 * This method returns one random region from the given pickable regions.
+	 * A method that returns which region the bot would like to start on, the
+	 * pickable regions are stored in the BotState. The bots are asked in turn
+	 * (ABBAABBAAB) where they would like to start and return a single region
+	 * each time they are asked. This method returns one random region from the
+	 * given pickable regions.
 	 */
-	public Region getStartingRegion(BotState state, Long timeOut)
-	{
-		float Maxvalue =0;
-		Region  startingRegion = null;
-		ArrayList<Region> regions= state.getPickableStartingRegions();
+	public Region getStartingRegion(BotState state, Long timeOut) {
+		float Maxvalue = 0;
+		Region startingRegion = null;
+		ArrayList<Region> regions = state.getPickableStartingRegions();
 
-		for(Region r: regions ){
-
+		for (Region r : regions) {
 			float bonus = r.getSuperRegion().getArmiesReward();
-
-			System.err.println("la super regione di "+r.getId()+ " ha bonus -> "+bonus);
-
-			float regionsNumber= (r.getSuperRegion().getSubRegions().size());
-			System.err.println("la super regione di "+r.getId()+ " ha  "+regionsNumber+" regioni");
-
-			float numWe=0;
-			for (Region  w :state.getWasteLands())
-				if (w.getSuperRegion()==r.getSuperRegion()){
+			float regionsNumber = (r.getSuperRegion().getSubRegions().size());
+			float numWe = 0;
+			for (Region w : state.getWasteLands())
+				if (w.getSuperRegion() == r.getSuperRegion()) {
 					numWe++;
 				}
-
-				System.err.println("la super regione di "+r.getId()+ " ha  "+numWe+ " terre neutrali");
-
-			float valueOfR = bonus/((regionsNumber*regionsNumber)+numWe);
-			System.err.println(valueOfR+" valore di " + r.getId());
-
-			if(valueOfR>Maxvalue){
-				System.err.println(valueOfR+" diventa il massimo ");
-
-				Maxvalue= valueOfR;
-				startingRegion=r;
-
+			float valueOfR = bonus / ((regionsNumber * regionsNumber) + numWe);
+			if (valueOfR > Maxvalue) {
+				Maxvalue = valueOfR;
+				startingRegion = r;
 			}
 		}
-
 		return startingRegion;
 	}
 
 	@Override
 	/**
-	 * This method is called for at first part of each round. This example puts two armies on random regions
-	 * until he has no more armies left to place.
+	 * This method is called for at first part of each round. This example puts
+	 * two armies on random regions until he has no more armies left to place.
+	 * 
 	 * @return The list of PlaceArmiesMoves for one round
 	 */
-	public ArrayList<PlaceArmiesMove> getPlaceArmiesMoves(BotState state, Long timeOut)
-	{
+	public ArrayList<PlaceArmiesMove> getPlaceArmiesMoves(BotState state, Long timeOut) {
 
 		ArrayList<PlaceArmiesMove> placeArmiesMoves = new ArrayList<PlaceArmiesMove>();
 		String myName = state.getMyPlayerName();
@@ -88,14 +73,12 @@ public class BotStarter implements Bot
 		int armiesLeft = state.getStartingArmies();
 		LinkedList<Region> visibleRegions = state.getVisibleMap().getRegions();
 
-		while(armiesLeft > 0)
-		{
+		while (armiesLeft > 0) {
 			double rand = Math.random();
-			int r = (int) (rand*visibleRegions.size());
+			int r = (int) (rand * visibleRegions.size());
 			Region region = visibleRegions.get(r);
 
-			if(region.ownedByPlayer(myName))
-			{
+			if (region.ownedByPlayer(myName)) {
 				placeArmiesMoves.add(new PlaceArmiesMove(myName, region, armies));
 				armiesLeft -= armies;
 			}
@@ -106,44 +89,43 @@ public class BotStarter implements Bot
 
 	@Override
 	/**
-	 * This method is called for at the second part of each round. This example attacks if a region has
-	 * more than 6 armies on it, and transfers if it has less than 6 and a neighboring owned region.
+	 * This method is called for at the second part of each round. This example
+	 * attacks if a region has more than 6 armies on it, and transfers if it has
+	 * less than 6 and a neighboring owned region.
+	 * 
 	 * @return The list of PlaceArmiesMoves for one round
 	 */
-	public ArrayList<AttackTransferMove> getAttackTransferMoves(BotState state, Long timeOut)
-	{
+	public ArrayList<AttackTransferMove> getAttackTransferMoves(BotState state, Long timeOut) {
 		ArrayList<AttackTransferMove> attackTransferMoves = new ArrayList<AttackTransferMove>();
 		String myName = state.getMyPlayerName();
 		int armies = 5;
 		int maxTransfers = 10;
 		int transfers = 0;
 
-		for(Region fromRegion : state.getVisibleMap().getRegions())
-		{
-			if(fromRegion.ownedByPlayer(myName)) //do an attack
+		for (Region fromRegion : state.getVisibleMap().getRegions()) {
+			if (fromRegion.ownedByPlayer(myName)) // do an attack
 			{
 				ArrayList<Region> possibleToRegions = new ArrayList<Region>();
 				possibleToRegions.addAll(fromRegion.getNeighbors());
 
-				while(!possibleToRegions.isEmpty())
-				{
+				while (!possibleToRegions.isEmpty()) {
 					double rand = Math.random();
-					int r = (int) (rand*possibleToRegions.size());
+					int r = (int) (rand * possibleToRegions.size());
 					Region toRegion = possibleToRegions.get(r);
 
-					if(!toRegion.getPlayerName().equals(myName) && fromRegion.getArmies() > 6) //do an attack
+					if (!toRegion.getPlayerName().equals(myName) && fromRegion.getArmies() > 6) // do
+																								// an
+																								// attack
 					{
 						attackTransferMoves.add(new AttackTransferMove(myName, fromRegion, toRegion, armies));
 						break;
-					}
-					else if(toRegion.getPlayerName().equals(myName) && fromRegion.getArmies() > 1
-								&& transfers < maxTransfers) //do a transfer
+					} else if (toRegion.getPlayerName().equals(myName) && fromRegion.getArmies() > 1
+							&& transfers < maxTransfers) // do a transfer
 					{
 						attackTransferMoves.add(new AttackTransferMove(myName, fromRegion, toRegion, armies));
 						transfers++;
 						break;
-					}
-					else
+					} else
 						possibleToRegions.remove(toRegion);
 				}
 			}
@@ -152,8 +134,7 @@ public class BotStarter implements Bot
 		return attackTransferMoves;
 	}
 
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		BotParser parser = new BotParser(new BotStarter());
 		parser.run();
 	}
