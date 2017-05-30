@@ -22,6 +22,7 @@ public interface Bot {
 	
 	public ArrayList<PlaceArmiesMove> getPlaceArmiesMoves(BotState state, Long timeOut);
 	
+	// give all the attack/transfer calculated
 	public ArrayList<AttackTransferMove> getAttackTransferMoves(BotState state, Long timeOut);
 
 }
