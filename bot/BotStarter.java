@@ -14,7 +14,7 @@ package bot;
  * This is a simple bot that does random (but correct) moves.
  * This class implements the Bot interface and overrides its Move methods.
  * You can implement these methods yourself very easily now,
- * since you can retrieve all information about the match from variable “state”.
+ * since you can retrieve all information about the match from variable â€œstateâ€�.
  * When the bot decided on the move to make, it returns an ArrayList of Moves. 
  * The bot is started by creating a Parser to which you add
  * a new instance of your bot, and then the parser is started.
@@ -38,6 +38,8 @@ public class BotStarter implements Bot
 	 */
 	public Region getStartingRegion(BotState state, Long timeOut)
 	{
+		
+		
 		double rand = Math.random();
 		int r = (int) (rand*state.getPickableStartingRegions().size());
 		int regionId = state.getPickableStartingRegions().get(r).getId();
