@@ -16,11 +16,13 @@ public class SuperRegion {
 	private int id;
 	private int armiesReward;
 	private LinkedList<Region> subRegions;
+
 	
 	public SuperRegion(int id, int armiesReward)
 	{
 		this.id = id;
 		this.armiesReward = armiesReward;
+		
 		subRegions = new LinkedList<Region>();
 	}
 	
@@ -64,4 +66,7 @@ public class SuperRegion {
 	public LinkedList<Region> getSubRegions() {
 		return subRegions;
 	}
+
+	
+
 }
