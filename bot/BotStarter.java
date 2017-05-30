@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import map.Region;
-import map.SuperRegion;
 import move.AttackTransferMove;
 import move.PlaceArmiesMove;
 
@@ -40,10 +39,26 @@ public class BotStarter implements Bot
 	{
 		
 		
-		double rand = Math.random();
-		int r = (int) (rand*state.getPickableStartingRegions().size());
-		int regionId = state.getPickableStartingRegions().get(r).getId();
-		Region startingRegion = state.getFullMap().getRegion(regionId);
+		float Maxvalue =0;
+		Region  startingRegion = null;
+		ArrayList<Region> regions= state.getPickableStartingRegions();
+		for(Region r: regions ){
+						
+			float bonus= r.getSuperRegion().getArmiesReward();
+			float regionsNumber= (r.getNeighbors().size()+1);
+			float numWe=0;
+			for (Region  w :state.getWasteLands())
+				if (w.getSuperRegion()==r.getSuperRegion()){
+					numWe++;
+				}
+			
+			float valueOfR = bonus/((regionsNumber*regionsNumber)+numWe);
+			
+			if(valueOfR>Maxvalue){
+				Maxvalue= valueOfR;
+				startingRegion=r;
+			}
+		}
 		
 		return startingRegion;
 	}
