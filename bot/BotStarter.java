@@ -23,6 +23,7 @@ package bot;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import map.SuperRegion;
 import map.Region;
 import move.AttackTransferMove;
 import move.PlaceArmiesMove;
@@ -44,14 +45,22 @@ public class BotStarter implements Bot {
 		ArrayList<Region> regions = state.getPickableStartingRegions();
 
 		for (Region r : regions) {
-			float bonus = r.getSuperRegion().getArmiesReward(); //Il valore di bonua per la super regione di appartenenza
-			float regionsNumber = (r.getSuperRegion().getSubRegions().size());
-			float numWe = 0;
+			
+			SuperRegion super_region = r.getSuperRegion(); //La super regione di appartenenza di una regione
+		
+			float bonus = super_region.getArmiesReward(); //Il valore di bonus per la super regione di appartenenza
+			
+			float regionsNumber = (super_region.getSubRegions().size()); //Il numero di sottoregioni per la super regione di appartenenza
+			
+			float numWe = 0; //Il numero di neutrali (regioni) per macro regioni
+
 			for (Region w : state.getWasteLands())
-				if (w.getSuperRegion() == r.getSuperRegion()) {
+				if (w.getSuperRegion() == super_region) {
 					numWe++;
-				}
-			float valueOfR = bonus / ((regionsNumber * regionsNumber) + numWe);
+			}
+
+			float valueOfR = bonus / ((regionsNumber * regionsNumber) + numWe); //equazione per il calcolo del valore di una regione
+			
 			if (valueOfR > Maxvalue) {
 				Maxvalue = valueOfR;
 				startingRegion = r;
